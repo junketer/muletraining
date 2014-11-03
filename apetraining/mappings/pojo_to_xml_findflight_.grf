@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?><Graph __version="3.5.0" author="exhibition" created="Mon Nov 03 09:00:55 GMT 2014" description="Pojo To Xml&lt;findFlight&gt;" guiVersion="3.4.4.P" id="1415010938748" licenseCode="Unlicensed" licenseType="Unknown" modified="Mon Nov 03 09:00:55 GMT 2014" modifiedBy="exhibition" name="Pojo_To_Xml_findFlight_" revision="1.0" showComponentDetails="false">
+<Global>
+<Metadata __filteredMetadata="false" __index="0" __referenceCounter="1" __schemaType="{http://training.mulesoft.com/}findFlight" __sourcePath="{http://training.mulesoft.com/=ns0}/ns0:findFlight" _dataStructure="OBJECT" _id="__id" _type="Output" id="232da68f-1983-46c3-90b5-a69aa2092a53">
+<Record fieldDelimiter="," name="findFlight" recordDelimiter="\n\\|\r\n\\|\r" type="delimited">
+<Field __artificialType="_id" __systemManaged="true" name="__id" type="string"/>
+<Field __index="0" __schemaType="{http://training.mulesoft.com/}findFlight" __sourcePath="{http://training.mulesoft.com/=ns0}/ns0:findFlight/arg0" containerType="SINGLE" label="arg0" name="arg0" type="string"/>
+</Record>
+</Metadata>
+<Metadata __index="0" __referenceCounter="1" __sourcePath="{}/object" _dataStructure="OBJECT" _id="__id" _type="Input" id="dfc557e3-25a9-4311-ac1a-dbfc07d41149">
+<Record fieldDelimiter="," name="String" recordDelimiter="\n\\|\r\n\\|\r" type="delimited">
+<Field __artificialType="_id" __systemManaged="true" name="__id" type="string"/>
+<Field __index="0" __sourcePath="{}/object/text()" containerType="SINGLE" label="text()" name="text" type="string"/>
+</Record>
+</Metadata>
+<Dictionary>
+<Entry id="DictionaryEntry0" input="true" name="inputPayload" output="false" type="object"/>
+<Entry id="DictionaryEntry1" input="false" name="outputPayload" output="true" type="object"/>
+<Entry dictval.__javaType="java.lang.String" id="DictionaryEntry2" input="true" name="StaticDestination" output="false" type="string"/>
+</Dictionary>
+</Global>
+<Phase number="0">
+<Node enabled="enabled" fileURL="dict:inputPayload" guiName="Pojo READER" guiX="20" guiY="20" id="BEAN_READER0" type="BEAN_READER">
+<attr name="mapping"><![CDATA[<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Context outPort="0" sequenceField="__id" xpath=".">
+  <Mapping cloverField="text" trim="true" xpath="."/>
+</Context>
+]]></attr>
+<attr name="_data_format"><![CDATA[JAVA]]></attr>
+<attr name="schema"><![CDATA[<?xml version="1.0" encoding="UTF-8"?><schema-object>
+  <typed-object-ref type-ref="java.lang.String"/>
+  <typed-object type="java.lang.String"/>
+</schema-object>
+]]></attr>
+</Node>
+<Node cacheInMemory="true" charset="UTF-8" enabled="enabled" fileURL="dict:outputPayload" guiName="XML WRITER" guiX="900" guiY="20" id="EXT_XML_WRITER0" type="EXT_XML_WRITER">
+<attr name="mapping"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<clover:element clover:name="ns0:findFlight" xmlns:clover="http://www.cloveretl.com/ns/xmlmapping" xmlns:ns0="http://training.mulesoft.com/" clover:inPort="0">
+  <arg0>$0.arg0</arg0>
+</clover:element>]]></attr>
+<attr name="_data_format"><![CDATA[XML]]></attr>
+<attr name="__metadata"><![CDATA[true]]></attr>
+</Node>
+<Node enabled="enabled" guiName="stringToXML" guiX="460" guiY="20" id="FOREACH_OBJECT_NS0_FIND_FLIGHT" transformClass="com.mulesoft.datamapper.transform.MelRecordTransform" type="REFORMAT">
+<attr name="melScript"><![CDATA[//MEL
+//START -> DO NOT REMOVE
+output.__id = input.__id;
+//END -> DO NOT REMOVE
+output.arg0 = inputArguments.StaticDestination;]]></attr>
+</Node>
+<Edge debugMode="true" fromNode="BEAN_READER0:0" guiBendpoints="" id="Edge0" inPort="Port 0 (in)" metadata="dfc557e3-25a9-4311-ac1a-dbfc07d41149" outPort="Port 0 (out)" toNode="FOREACH_OBJECT_NS0_FIND_FLIGHT:0"/>
+<Edge debugMode="true" fromNode="FOREACH_OBJECT_NS0_FIND_FLIGHT:0" guiBendpoints="" id="Edge1" inPort="Port 0 (in)" metadata="232da68f-1983-46c3-90b5-a69aa2092a53" outPort="Port 0 (out)" toNode="EXT_XML_WRITER0:0"/>
+</Phase>
+</Graph>
