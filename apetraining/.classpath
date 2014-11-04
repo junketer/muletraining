@@ -10,5 +10,6 @@
 	<classpathentry kind="src" output="target/test-classes" path="src/test/resources"/>
 	<classpathentry exported="true" kind="con" path="MULE_RUNTIME"/>
 	<classpathentry kind="lib" path="src/main/app/lib/mysql-connector-java-5.0.8-bin.jar"/>
+	<classpathentry kind="con" path="MULE_LIB/APIkit/org.mule.tooling.apikit"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

@@ -6,7 +6,7 @@ import java.util.Map;
 
 import javax.jws.WebService;
 
-public class AirportTerminal {
+public class AirportTerminal implements AirportTerminalService {
 
 	Map<String, Terminal> terminalMap = new HashMap<String, Terminal>();
 
