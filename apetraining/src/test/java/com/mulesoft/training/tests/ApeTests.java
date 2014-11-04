@@ -4,16 +4,19 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.InputStream;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.json.JSONArray;
 import org.junit.Test;
 import org.mule.api.MuleMessage;
 import org.mule.api.client.LocalMuleClient;
 import org.mule.api.client.MuleClient;
 import org.mule.tck.junit4.FunctionalTestCase;
 import org.mule.transport.http.HttpConnector;
+
+import com.mulesoft.training.Flight;
 
 public class ApeTests extends FunctionalTestCase {
 
@@ -28,17 +31,20 @@ public class ApeTests extends FunctionalTestCase {
 		MuleClient client = muleContext.getClient();
 		Map<String, Object> headers = new HashMap<String, Object>(1);
 		headers.put(HttpConnector.HTTP_METHOD_PROPERTY, "GET");
-		MuleMessage msg = client.send("http://localhost:8083/united/flight/SFO", "",
+		MuleMessage msg = client.send("vm://united", "SFO",
 				headers, 10000);
 		assertNotNull(msg);
 		assertNotNull(msg.getPayload());
-		assertTrue(msg.getPayload() instanceof InputStream);
-		String payloadAsString = msg.getPayloadAsString();
-		assertNotNull(payloadAsString);
-
-		assertEquals(
-				"[{\"airlineName\":\"United\",\"price\":400,\"departureDate\":\"2015/03/20\",\"planeType\":\"Boing 737\",\"origin\":\"MUA\",\"emptySeats\":0,\"code\":\"ER38sd\",\"destination\":\"SFO\"},{\"airlineName\":\"United\",\"price\":945,\"departureDate\":\"2015/09/11\",\"planeType\":\"Boing 757\",\"origin\":\"MUA\",\"emptySeats\":54,\"code\":\"ER39rk\",\"destination\":\"SFO\"},{\"airlineName\":\"United\",\"price\":954,\"departureDate\":\"2015/02/12\",\"planeType\":\"Boing 777\",\"origin\":\"MUA\",\"emptySeats\":23,\"code\":\"ER39rj\",\"destination\":\"SFO\"}]",
-				payloadAsString);
+		assertTrue(msg.getPayload() instanceof List<?>);
+		List<Flight> payloadAsList= (List<Flight>)msg.getPayload();
+		assertNotNull(payloadAsList);
+		JSONArray ja = new JSONArray(payloadAsList);
+		String payloadAsString = ja.toString();
+		System.out.println(payloadAsString);
+		String exp ="[{\"airlineName\":\"United\",\"price\":400,\"departureDate\":\"2015/03/20\",\"planeType\":\"Boing 737\",\"origin\":\"MUA\",\"emptySeats\":0,\"code\":\"ER38sd\",\"destination\":\"SFO\"},{\"airlineName\":\"United\",\"price\":945,\"departureDate\":\"2015/09/11\",\"planeType\":\"Boing 757\",\"origin\":\"MUA\",\"emptySeats\":54,\"code\":\"ER39rk\",\"destination\":\"SFO\"},{\"airlineName\":\"United\",\"price\":954,\"departureDate\":\"2015/02/12\",\"planeType\":\"Boing 777\",\"origin\":\"MUA\",\"emptySeats\":23,\"code\":\"ER39rj\",\"destination\":\"SFO\"}]";
+		System.out.println(exp);
+				 
+		assertEquals(exp,				payloadAsString);
 		System.out.println("United: " + payloadAsString);
 	}
 
@@ -48,11 +54,11 @@ public class ApeTests extends FunctionalTestCase {
 		LocalMuleClient client = muleContext.getClient();
 		Map<String, Object> headers = new HashMap<String, Object>(1);
 		headers.put(HttpConnector.HTTP_METHOD_PROPERTY, "GET");
-		MuleMessage msg = client.send("http://localhost:8082/delta?destination=SFO", "", headers,
+		MuleMessage msg = client.send("vm://delta", "SFO", headers,
 				10000);
 		assertNotNull(msg);
 		assertNotNull(msg.getPayload());
-		assertTrue(msg.getPayload() instanceof InputStream);
+		assertTrue(msg.getPayload() instanceof List);
 		String payloadAsString = msg.getPayloadAsString();
 		assertNotNull(payloadAsString);
 		assertEquals(
@@ -68,11 +74,11 @@ public class ApeTests extends FunctionalTestCase {
 		LocalMuleClient client = muleContext.getClient();
 		Map<String, Object> headers = new HashMap<String, Object>(1);
 		headers.put(HttpConnector.HTTP_METHOD_PROPERTY, "GET");
-		MuleMessage msg = client.send("http://localhost:8084/american?destination=SFO", "", headers,
+		MuleMessage msg = client.send("vm://american", "SFO", headers,
 				10000);
 		assertNotNull(msg);
 		assertNotNull(msg.getPayload());
-		assertTrue(msg.getPayload() instanceof InputStream);
+		assertTrue(msg.getPayload() instanceof List);
 		String payloadAsString = msg.getPayloadAsString();
 		assertNotNull(payloadAsString);
 

@@ -77,7 +77,9 @@ output.price = input.price;
 output.departuredate = input.departureDate;
 output.planeType = input.planeType;
 output.destination = input.destination;
-]]></attr>
+output.origination = input.origin;
+output.availableSeats = input.emptySeats;
+output.flightCode = input.code;]]></attr>
 </Node>
 <Node charset="UTF-8" enabled="enabled" fileURL="dict:inputPayload" guiName="JSON READER" guiX="20" guiY="20" id="JSON_READER0" type="JSON_READER">
 <attr name="mapping"><![CDATA[<?xml version="1.0" encoding="UTF-8" standalone="no"?>
