@@ -31,8 +31,11 @@ http://www.mulesoft.org/schema/mule/ee/data-mapper http://www.mulesoft.org/schem
         <batch:process-records>
             <batch:step name="Batch_Step1">
                 <logger message="#[payload]" level="INFO" doc:name="Logger"/>
+                <enricher source="#[payload.size()&gt;0 ? true : false]" target="#[recordVars['exists']]" doc:name="Message Enricher">
+                    <sfdc:query config-ref="Salesforce" query="dsql:SELECT AccountNumber FROM Account WHERE Name = #[message.payload.Name]" doc:name="Salesforce"/>
+                </enricher>
             </batch:step>
-            <batch:step name="Batch_Step">
+            <batch:step name="Batch_Step" accept-expression="#[recordVars['exists']]">
                 <batch:commit size="100" doc:name="Batch Commit">
                     <sfdc:create config-ref="Salesforce" type="Account" doc:name="Salesforce">
                         <sfdc:objects ref="#[payload]"/>

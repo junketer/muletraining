@@ -96,13 +96,8 @@ http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/cu
 			doc:name="XML&lt;Flight&gt;" />
         <exception-strategy ref="Choice_Exception_Strategy" doc:name="Reference Exception Strategy"/>
 	</flow>
-	<flow name="PrimaryFlow" doc:name="PrimaryFlow"
-		doc:description="Calls each airline flow to aggregate flight lookups">
-		<vm:inbound-endpoint exchange-pattern="request-response"
-			path="primary" doc:name="VM" />
-		<logger message="Input: #[message.payload]" level="INFO"
-			doc:name="Logger" />
-		<json:json-to-object-transformer
+	<sub-flow name="PrimarySubFlow">
+			<json:json-to-object-transformer
 			returnClass="com.mulesoft.training.FlightRequest" doc:name="JSON to Object" />
 		<set-payload value="#[message.payload.destination]"
 			doc:name="Set Payload" />
@@ -135,6 +130,15 @@ http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/cu
                 <object-to-string-transformer doc:name="Object to String"/>
             </otherwise>
         </choice>
+	
+	</sub-flow>
+	<flow name="PrimaryFlow" doc:name="PrimaryFlow"
+		doc:description="Calls each airline flow to aggregate flight lookups">
+		<vm:inbound-endpoint exchange-pattern="request-response"
+			path="primary" doc:name="VM" />
+		<logger message="Input: #[message.payload]" level="INFO"
+			doc:name="Logger" />
+		<flow-ref name="PrimarySubFlow" />
         <exception-strategy ref="Choice_Exception_Strategy" doc:name="Reference Exception Strategy"/>
 	</flow>
 	<flow name="FlightForm" doc:name="FlightForm">
