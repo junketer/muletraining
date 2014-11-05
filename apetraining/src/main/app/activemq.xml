@@ -15,7 +15,7 @@ http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/m
         <set-payload value="Put #[message.payload] on the queue" doc:name="Set Payload"/>
     </flow>
     <flow name="mqGetFlow" doc:name="mqGetFlow">
-        <jms:inbound-endpoint queue="dan" connector-ref="Active_MQ" doc:name="JMS"/>
+        <jms:inbound-endpoint queue="dan" connector-ref="Active_MQ" tracking:enable-default-events="true" doc:name="JMS"/>
         <logger message="JMS payload: #[message.payload]" level="INFO" doc:name="Logger"/>
         <logger message="#[message]" level="INFO" doc:name="Logger"/>
     </flow>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:apikit="http://www.mulesoft.org/schema/mule/apikit" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns:cxf="http://www.mulesoft.org/schema/mule/cxf" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+<mule xmlns:jms="http://www.mulesoft.org/schema/mule/jms" xmlns:apikit="http://www.mulesoft.org/schema/mule/apikit" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns:cxf="http://www.mulesoft.org/schema/mule/cxf" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
 	xmlns:spring="http://www.springframework.org/schema/beans" version="EE-3.5.2"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
@@ -8,17 +8,21 @@ http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/cor
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/cxf http://www.mulesoft.org/schema/mule/cxf/current/mule-cxf.xsd
 http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd
-http://www.mulesoft.org/schema/mule/apikit http://www.mulesoft.org/schema/mule/apikit/current/mule-apikit.xsd">
+http://www.mulesoft.org/schema/mule/apikit http://www.mulesoft.org/schema/mule/apikit/current/mule-apikit.xsd
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd">
     <flow name="ClientFlowList" doc:name="ClientFlowList">
         <http:inbound-endpoint exchange-pattern="request-response" host="localhost" port="8081" path="clientList" doc:name="HTTP"/>
         <response>
             <object-to-string-transformer doc:name="Object to String"/>
         </response>
         <cxf:jaxws-client operation="listAllTerminalStatuses" serviceClass="com.mulesoft.training.soap.AirportTerminalService" doc:name="CXF"/>
-        <http:outbound-endpoint exchange-pattern="request-response" host="localhost" port="8081" path="terminal" method="POST" doc:name="HTTP"/>
+        <request-reply doc:name="Request-Reply">
+            <jms:outbound-endpoint queue="terminalsQueue" connector-ref="Active_MQ" doc:name="JMS"/>
+            <jms:inbound-endpoint queue="terminalsListResponseQueue" connector-ref="Active_MQ" doc:name="JMS"/>
+        </request-reply>
     </flow>
     <flow name="TerminalFlow" doc:name="TerminalFlow">
-        <http:inbound-endpoint exchange-pattern="request-response" host="localhost" port="8081" path="terminal" doc:name="HTTP"/>
+        <jms:inbound-endpoint exchange-pattern="request-response" queue="terminalsQueue" connector-ref="Active_MQ" doc:name="JMS"/>
         <cxf:jaxws-service serviceClass="com.mulesoft.training.soap.AirportTerminalService" doc:name="CXF"/>
         <component class="com.mulesoft.training.soap.AirportTerminal" doc:name="Java"/>
     </flow>
@@ -29,6 +33,9 @@ http://www.mulesoft.org/schema/mule/apikit http://www.mulesoft.org/schema/mule/a
             <object-to-string-transformer doc:name="Object to String"/>
         </response>
         <cxf:jaxws-client operation="findTerminalStatus" serviceClass="com.mulesoft.training.soap.AirportTerminalService" doc:name="CXF"/>
-        <http:outbound-endpoint exchange-pattern="request-response" host="localhost" port="8081" path="terminal" method="POST" doc:name="HTTP"/>
+        <request-reply doc:name="Request-Reply">
+            <jms:outbound-endpoint queue="terminalsQueue" connector-ref="Active_MQ" doc:name="JMS"/>
+            <jms:inbound-endpoint queue="terminalsResponseQueue" connector-ref="Active_MQ" doc:name="JMS"/>
+        </request-reply>
     </flow>
 </mule>
