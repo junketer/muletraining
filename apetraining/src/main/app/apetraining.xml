@@ -128,7 +128,7 @@ http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/cu
         <choice doc:name="Choice">
             <when expression="#[message.payload is java.util.Collection]">
                 <combine-collections-transformer doc:name="Combine Flight Collections"/>
-                <custom-transformer class="com.mulesoft.training.FlightSortingTransformer" doc:name="Java"/>
+                <custom-transformer class="com.mulesoft.training.FlightSortingTransformer" doc:name="Sort"/>
                 <json:object-to-json-transformer doc:name="Object to JSON"/>
             </when>
             <otherwise>

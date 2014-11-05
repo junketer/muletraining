@@ -1,13 +1,15 @@
 package com.mulesoft.training;
 
-import java.util.Comparator;
-
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 @JsonAutoDetect
 public class Flight implements java.io.Serializable, Comparable<Flight> {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2883909215955533606L;
 	String flightCode;
 	String airlineName;
 
