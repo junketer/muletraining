@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:cluster="http://www.mulesoft.org/schema/mule/cluster"
+<mule xmlns:context="http://www.springframework.org/schema/context" xmlns:cluster="http://www.mulesoft.org/schema/mule/cluster"
 	xmlns:vm="http://www.mulesoft.org/schema/mule/vm" xmlns:json="http://www.mulesoft.org/schema/mule/json"
 	xmlns:mulexml="http://www.mulesoft.org/schema/mule/xml" xmlns:db="http://www.mulesoft.org/schema/mule/db"
 	xmlns:ws="http://www.mulesoft.org/schema/mule/ws" xmlns:data-mapper="http://www.mulesoft.org/schema/mule/ee/data-mapper"
@@ -18,7 +18,8 @@ http://www.mulesoft.org/schema/mule/ee/data-mapper http://www.mulesoft.org/schem
 http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
 http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd
 http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd
-http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd">
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-current.xsd">
 	<ws:consumer-config name="Delta_Web_Service_Consumer"
 		wsdlLocation="http://airlines.cloudhub.io/delta?wsdl" service="TicketServiceService"
 		port="TicketServicePort" serviceAddress="http://airlines.cloudhub.io/delta"
@@ -79,6 +80,7 @@ http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/cu
 
 		</catch-exception-strategy>
 	</choice-exception-strategy>
+    <context:property-placeholder location="app.props.train.properties"/>
 	<flow name="DeltaFlow" doc:name="DeltaFlow">
 		<vm:inbound-endpoint exchange-pattern="request-response"
 			path="delta" doc:name="DeltaVM" />
@@ -96,7 +98,7 @@ http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/cu
 			doc:name="XML&lt;Flight&gt;" />
         <exception-strategy ref="Choice_Exception_Strategy" doc:name="Reference Exception Strategy"/>
 	</flow>
-	<sub-flow name="PrimarySubFlow">
+	<sub-flow name="PrimarySubFlow" doc:name="PrimarySubFlow">
 			<json:json-to-object-transformer
 			returnClass="com.mulesoft.training.FlightRequest" doc:name="JSON to Object" />
 		<set-payload value="#[message.payload.destination]"
@@ -138,12 +140,12 @@ http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/cu
 			path="primary" doc:name="VM" />
 		<logger message="Input: #[message.payload]" level="INFO"
 			doc:name="Logger" />
-		<flow-ref name="PrimarySubFlow" />
+		<flow-ref name="PrimarySubFlow" doc:name="Flow Reference"/>
         <exception-strategy ref="Choice_Exception_Strategy" doc:name="Reference Exception Strategy"/>
 	</flow>
 	<flow name="FlightForm" doc:name="FlightForm">
 		<http:inbound-endpoint exchange-pattern="request-response"
-			host="localhost" port="8081" path="flight" doc:name="HTTP" />
+			host="${FlightForm.http.server}" port="${FlightForm.http.port}" path="${FlightForm.http.path}" doc:name="HTTP" />
 		<logger message="#[message.inboundProperties['http.method']]"
 			level="INFO" doc:name="Logger" />
 		<choice doc:name="Choice">

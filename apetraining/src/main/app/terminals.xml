@@ -22,7 +22,8 @@ http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/
         </request-reply>
     </flow>
     <flow name="TerminalFlow" doc:name="TerminalFlow">
-        <jms:inbound-endpoint exchange-pattern="request-response" queue="terminalsQueue" connector-ref="Active_MQ" doc:name="JMS"/>
+        <jms:inbound-endpoint exchange-pattern="request-response" queue="terminalsQueue" connector-ref="Active_MQ" doc:name="JMS">
+        </jms:inbound-endpoint>
         <cxf:jaxws-service serviceClass="com.mulesoft.training.soap.AirportTerminalService" doc:name="CXF"/>
         <component class="com.mulesoft.training.soap.AirportTerminal" doc:name="Java"/>
     </flow>
