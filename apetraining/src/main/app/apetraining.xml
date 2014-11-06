@@ -148,6 +148,9 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 			host="${FlightForm.http.server}" port="${FlightForm.http.port}" path="${FlightForm.http.path}" doc:name="HTTP" />
 		<logger message="#[message.inboundProperties['http.method']]"
 			level="INFO" doc:name="Logger" />
+        <tracking:custom-event event-name="Request" doc:name="RequestBE">
+            <tracking:meta-data value="#[message.id]"/>
+        </tracking:custom-event>
 		<choice doc:name="Choice">
 			<when expression="#[message.inboundProperties['http.method']=='GET']">
 				<parse-template location="FlightFinder.html"
